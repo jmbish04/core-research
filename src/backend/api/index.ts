@@ -16,12 +16,16 @@ import { notificationsRouter } from './routes/notifications';
 import { aiRouter } from './routes/ai';
 import { documentsRouter } from './routes/documents';
 import { openapiRouter } from './routes/openapi';
+import { researchRouter } from './routes/research';
 
 export type Bindings = {
   DB: D1Database;
   AI: Ai;
   AI_GATEWAY_TOKEN?: string;
   CLOUDFLARE_ACCOUNT_ID?: string;
+  GEMINI_API_KEY?: string;
+  R2?: any;
+  LOADER?: any;
 };
 
 export type Variables = {
@@ -50,6 +54,7 @@ app.route('/api/health', healthRouter);
 app.route('/api/notifications', notificationsRouter);
 app.route('/api/ai', aiRouter);
 app.route('/api/documents', documentsRouter);
+app.route('/api/research', researchRouter);
 app.route('/', openapiRouter);
 
 export { app };

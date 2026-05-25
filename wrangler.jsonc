@@ -30,6 +30,17 @@
   "ai": {
     "binding": "AI",
   },
+  "worker_loaders": [
+    {
+      "binding": "LOADER"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2",
+      "bucket_name": "research-artifacts"
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
