@@ -1,0 +1,24 @@
+---
+/**
+ * Deep Research Dashboard
+ * Main interface for the Deep Research Platform
+ */
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ResearchDashboard from '../components/ResearchDashboard';
+---
+
+<BaseLayout title="Deep Research Platform">
+  <div class="min-h-screen bg-background text-foreground">
+    <div class="container mx-auto px-4 py-8">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-2">Deep Research Platform</h1>
+        <p class="text-muted-foreground">
+          Autonomous deep research powered by Gemini and Cloudflare Edge
+        </p>
+      </div>
+
+      <ResearchDashboard client:load />
+    </div>
+  </div>
+</BaseLayout>
