@@ -61,27 +61,24 @@ The UI uses the borderless, absolute high-contrast dark Monolith theme with OKLC
 The platform integrates with Gemini's Deep Research API (`deep-research-preview-04-2026`):
 
 ```typescript
-const response = await fetch(
-  'https://generativelanguage.googleapis.com/v1beta/interactions',
-  {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Revision': '2026-05-20',
-      'x-goog-api-key': env.GEMINI_API_KEY,
+const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "Api-Revision": "2026-05-20",
+    "x-goog-api-key": env.GEMINI_API_KEY,
+  },
+  body: JSON.stringify({
+    agent: "deep-research-preview-04-2026",
+    background: true,
+    agent_config: {
+      type: "deep-research",
+      thinking_summaries: "auto",
+      visualization: "auto",
     },
-    body: JSON.stringify({
-      agent: 'deep-research-preview-04-2026',
-      background: true,
-      agent_config: {
-        type: 'deep-research',
-        thinking_summaries: 'auto',
-        visualization: 'auto',
-      },
-      prompt: query,
-    }),
-  }
-);
+    prompt: query,
+  }),
+});
 ```
 
 ### Background Tracking Loop
@@ -135,10 +132,8 @@ All use `DynamicWorkerExecutor` with network isolation (`globalOutbound: null`).
   "ai": { "binding": "AI" },
   "worker_loaders": [{ "binding": "LOADER" }],
   "r2_buckets": [{ "binding": "R2", "bucket_name": "research-artifacts" }],
-  "d1_databases": [{ "binding": "DB", /* ... */ }],
-  "secrets_store_secrets": [
-    { "binding": "GEMINI_API_KEY", /* ... */ }
-  ]
+  "d1_databases": [{ "binding": "DB" /* ... */ }],
+  "secrets_store_secrets": [{ "binding": "GEMINI_API_KEY" /* ... */ }],
 }
 ```
 
@@ -195,11 +190,13 @@ The implementation follows Cloudflare's best practices for long-running agents:
 ### Agent vs Workflow Decision
 
 This implementation uses **Agents** for:
+
 - Background polling and state updates
 - Real-time WebSocket communication
 - Managing research lifecycle
 
 Could extend with **Workflows** for:
+
 - Multi-step artifact generation pipelines
 - Retry logic with backoff
 - Human approval flows

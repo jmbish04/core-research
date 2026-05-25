@@ -4,9 +4,10 @@
  * Handles PWA generation, podcast synthesis, mindmap creation, and dev suite tools
  */
 
-import { DynamicWorkerExecutor } from '@cloudflare/codemode';
-import { createCodeTool } from '@cloudflare/codemode/ai';
-import { logger } from '../../lib/logger';
+import { DynamicWorkerExecutor } from "@cloudflare/codemode";
+import { createCodeTool } from "@cloudflare/codemode/ai";
+
+import { logger } from "../../lib/logger";
 
 export interface ArtifactGeneratorEnv {
   LOADER: any;
@@ -17,10 +18,7 @@ export interface ArtifactGeneratorEnv {
 /**
  * Generate a Progressive Web App from research content
  */
-export async function generatePWA(
-  content: string,
-  env: ArtifactGeneratorEnv
-): Promise<string> {
+export async function generatePWA(content: string, env: ArtifactGeneratorEnv): Promise<string> {
   try {
     const executor = new DynamicWorkerExecutor({
       loader: env.LOADER,
@@ -87,11 +85,11 @@ export async function generatePWA(
 
     const result = await executor.execute(pwaCode, {});
 
-    logger.info('PWA generated successfully');
+    logger.info("PWA generated successfully");
 
     return result.result as string;
   } catch (error) {
-    logger.error('Failed to generate PWA', error);
+    logger.error("Failed to generate PWA", error);
     throw error;
   }
 }
@@ -99,27 +97,24 @@ export async function generatePWA(
 /**
  * Generate podcast audio from research content
  */
-export async function generatePodcast(
-  content: string,
-  env: ArtifactGeneratorEnv
-): Promise<string> {
+export async function generatePodcast(content: string, env: ArtifactGeneratorEnv): Promise<string> {
   try {
     // Use Workers AI for text-to-speech
     if (!env.AI) {
-      throw new Error('AI binding not available');
+      throw new Error("AI binding not available");
     }
 
-    const response = await env.AI.run('@cf/meta/m2m100-1.2b', {
+    const response = await env.AI.run("@cf/meta/m2m100-1.2b", {
       text: content,
-      source_lang: 'en',
-      target_lang: 'en', // Convert to speech-friendly format
+      source_lang: "en",
+      target_lang: "en", // Convert to speech-friendly format
     });
 
-    logger.info('Podcast audio generated');
+    logger.info("Podcast audio generated");
 
-    return 'podcast-audio-url'; // Placeholder - would upload to R2
+    return "podcast-audio-url"; // Placeholder - would upload to R2
   } catch (error) {
-    logger.error('Failed to generate podcast', error);
+    logger.error("Failed to generate podcast", error);
     throw error;
   }
 }
@@ -127,10 +122,7 @@ export async function generatePodcast(
 /**
  * Generate mindmap JSON from research content
  */
-export async function generateMindmap(
-  content: string,
-  env: ArtifactGeneratorEnv
-): Promise<string> {
+export async function generateMindmap(content: string, env: ArtifactGeneratorEnv): Promise<string> {
   try {
     const executor = new DynamicWorkerExecutor({
       loader: env.LOADER,
@@ -163,11 +155,11 @@ export async function generateMindmap(
 
     const result = await executor.execute(mindmapCode, {});
 
-    logger.info('Mindmap generated successfully');
+    logger.info("Mindmap generated successfully");
 
     return result.result as string;
   } catch (error) {
-    logger.error('Failed to generate mindmap', error);
+    logger.error("Failed to generate mindmap", error);
     throw error;
   }
 }
@@ -177,7 +169,7 @@ export async function generateMindmap(
  */
 export async function generateDevSuite(
   content: string,
-  env: ArtifactGeneratorEnv
+  env: ArtifactGeneratorEnv,
 ): Promise<{ prd: string; tasks: string; prompt: string }> {
   try {
     const executor = new DynamicWorkerExecutor({
@@ -205,11 +197,11 @@ export async function generateDevSuite(
 
     const result = await executor.execute(devSuiteCode, {});
 
-    logger.info('Dev suite generated successfully');
+    logger.info("Dev suite generated successfully");
 
     return JSON.parse(result.result as string);
   } catch (error) {
-    logger.error('Failed to generate dev suite', error);
+    logger.error("Failed to generate dev suite", error);
     throw error;
   }
 }

@@ -3,17 +3,16 @@
  * Interactive chat interface with assistant-ui for research projects
  */
 
-import React, { useState, useEffect } from 'react';
-import { useAssistant } from '@assistant-ui/react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Input } from './ui/input';
-import { Badge } from './ui/badge';
-import { Textarea } from './ui/textarea';
+import React, { useState, useEffect } from "react";
+
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Textarea } from "./ui/textarea";
 
 interface Message {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   createdAt: Date;
 }
@@ -33,7 +32,7 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
   const [project, setProject] = useState<Project | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [artifacts, setArtifacts] = useState<any[]>([]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
 
@@ -52,7 +51,7 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
         setArtifacts(data.artifacts);
       }
     } catch (error) {
-      console.error('Failed to load project:', error);
+      console.error("Failed to load project:", error);
     } finally {
       setLoading(false);
     }
@@ -62,16 +61,16 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
     if (!input.trim()) return;
 
     const userMessage = input;
-    setInput('');
+    setInput("");
     setSending(true);
 
     try {
-      const response = await fetch('/api/research/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/research/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectId,
-          role: 'user',
+          role: "user",
           content: userMessage,
         }),
       });
@@ -84,7 +83,7 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
           ...prev,
           {
             id: data.messageId,
-            role: 'user',
+            role: "user",
             content: userMessage,
             createdAt: new Date(),
           },
@@ -96,7 +95,7 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
             ...prev,
             {
               id: crypto.randomUUID(),
-              role: 'assistant',
+              role: "assistant",
               content: data.assistantResponse,
               createdAt: new Date(),
             },
@@ -104,7 +103,7 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
         }
       }
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error("Failed to send message:", error);
     } finally {
       setSending(false);
     }
@@ -116,9 +115,9 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
     setSending(true);
 
     try {
-      const response = await fetch('/api/research/dispatch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/research/dispatch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectId,
           query: input,
@@ -128,27 +127,25 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
       const data = await response.json();
 
       if (data.success) {
-        setInput('');
+        setInput("");
         await loadProject(); // Reload to get updated status
       }
     } catch (error) {
-      console.error('Failed to dispatch research:', error);
+      console.error("Failed to dispatch research:", error);
     } finally {
       setSending(false);
     }
   }
 
-  async function generateArtifact(type: 'pwa' | 'podcast' | 'mindmap' | 'dev_suite') {
-    const lastAssistantMessage = messages
-      .filter((m) => m.role === 'assistant')
-      .pop();
+  async function generateArtifact(type: "pwa" | "podcast" | "mindmap" | "dev_suite") {
+    const lastAssistantMessage = messages.filter((m) => m.role === "assistant").pop();
 
     if (!lastAssistantMessage) return;
 
     try {
-      const response = await fetch('/api/research/action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/research/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectId,
           action: type,
@@ -203,13 +200,13 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
                 <div
                   key={message.id}
                   className={`p-4 rounded-lg ${
-                    message.role === 'user'
-                      ? 'bg-primary text-primary-foreground ml-8'
-                      : 'bg-muted mr-8'
+                    message.role === "user"
+                      ? "bg-primary text-primary-foreground ml-8"
+                      : "bg-muted mr-8"
                   }`}
                 >
                   <div className="font-semibold text-sm mb-1">
-                    {message.role === 'user' ? 'You' : 'Assistant'}
+                    {message.role === "user" ? "You" : "Assistant"}
                   </div>
                   <div className="whitespace-pre-wrap">{message.content}</div>
                 </div>
@@ -226,18 +223,14 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
               className="w-full"
               rows={3}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
+                if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
                   sendMessage();
                 }
               }}
             />
             <div className="flex gap-2">
-              <Button
-                onClick={sendMessage}
-                disabled={sending || !input.trim()}
-                className="flex-1"
-              >
+              <Button onClick={sendMessage} disabled={sending || !input.trim()} className="flex-1">
                 Send Message
               </Button>
               <Button
@@ -253,36 +246,20 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
         </Card>
 
         {/* Artifact Actions */}
-        {messages.some((m) => m.role === 'assistant') && (
+        {messages.some((m) => m.role === "assistant") && (
           <Card className="p-4">
             <h3 className="font-semibold mb-3">Generate Artifacts</h3>
             <div className="grid grid-cols-2 gap-2">
-              <Button
-                onClick={() => generateArtifact('pwa')}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={() => generateArtifact("pwa")} variant="outline" size="sm">
                 📱 PWA Dashboard
               </Button>
-              <Button
-                onClick={() => generateArtifact('podcast')}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={() => generateArtifact("podcast")} variant="outline" size="sm">
                 🎙️ Podcast
               </Button>
-              <Button
-                onClick={() => generateArtifact('mindmap')}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={() => generateArtifact("mindmap")} variant="outline" size="sm">
                 🗺️ Mindmap
               </Button>
-              <Button
-                onClick={() => generateArtifact('dev_suite')}
-                variant="outline"
-                size="sm"
-              >
+              <Button onClick={() => generateArtifact("dev_suite")} variant="outline" size="sm">
                 💻 Dev Suite
               </Button>
             </div>
@@ -296,16 +273,11 @@ export default function ResearchChat({ projectId }: ResearchChatProps) {
           <h3 className="font-semibold mb-3">Generated Artifacts</h3>
 
           {artifacts.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">
-              No artifacts yet
-            </p>
+            <p className="text-sm text-muted-foreground text-center py-4">No artifacts yet</p>
           ) : (
             <div className="space-y-2">
               {artifacts.map((artifact) => (
-                <div
-                  key={artifact.id}
-                  className="p-3 bg-muted rounded-lg space-y-1"
-                >
+                <div key={artifact.id} className="p-3 bg-muted rounded-lg space-y-1">
                   <div className="font-medium text-sm">{artifact.title}</div>
                   <Badge variant="outline" className="text-xs">
                     {artifact.type}

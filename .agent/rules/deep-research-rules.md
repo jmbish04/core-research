@@ -29,11 +29,13 @@ Based on the Cloudflare documentation research:
 ### Agent vs Workflow Decision
 
 Use **Agents** for:
+
 - Agent-centric work: scheduling, polling, state updates
 - Real-time communication via WebSockets
 - Tasks under 30 seconds with keepAlive
 
 Use **Workflows** for:
+
 - Independent multi-step pipelines
 - Tasks requiring automatic retries with backoff
 - Human approval flows with `waitForApproval()`
