@@ -4,19 +4,21 @@
  * This file sets up the main Hono application with all API routes and middleware.
  */
 
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { logger } from 'hono/logger';
-import type { D1Database, Ai } from '@cloudflare/workers-types';
-import { authRouter } from './routes/auth';
-import { dashboardRouter } from './routes/dashboard';
-import { threadsRouter } from './routes/threads';
-import { healthRouter } from './routes/health';
-import { notificationsRouter } from './routes/notifications';
-import { aiRouter } from './routes/ai';
-import { documentsRouter } from './routes/documents';
-import { openapiRouter } from './routes/openapi';
-import { researchRouter } from './routes/research';
+import type { D1Database, Ai } from "@cloudflare/workers-types";
+
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+
+import { aiRouter } from "./routes/ai";
+import { authRouter } from "./routes/auth";
+import { dashboardRouter } from "./routes/dashboard";
+import { documentsRouter } from "./routes/documents";
+import { healthRouter } from "./routes/health";
+import { notificationsRouter } from "./routes/notifications";
+import { openapiRouter } from "./routes/openapi";
+import { researchRouter } from "./routes/research";
+import { threadsRouter } from "./routes/threads";
 
 export type Bindings = {
   DB: D1Database;
@@ -40,21 +42,21 @@ export type Variables = {
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>();
 
 // Middleware
-app.use('*', cors());
-app.use('*', logger());
+app.use("*", cors());
+app.use("*", logger());
 
 // Health check
-app.get('/api/ping', (c) => c.json({ status: 'ok', timestamp: Date.now() }));
+app.get("/api/ping", (c) => c.json({ status: "ok", timestamp: Date.now() }));
 
 // Mount routers
-app.route('/api/auth', authRouter);
-app.route('/api/dashboard', dashboardRouter);
-app.route('/api/threads', threadsRouter);
-app.route('/api/health', healthRouter);
-app.route('/api/notifications', notificationsRouter);
-app.route('/api/ai', aiRouter);
-app.route('/api/documents', documentsRouter);
-app.route('/api/research', researchRouter);
-app.route('/', openapiRouter);
+app.route("/api/auth", authRouter);
+app.route("/api/dashboard", dashboardRouter);
+app.route("/api/threads", threadsRouter);
+app.route("/api/health", healthRouter);
+app.route("/api/notifications", notificationsRouter);
+app.route("/api/ai", aiRouter);
+app.route("/api/documents", documentsRouter);
+app.route("/api/research", researchRouter);
+app.route("/", openapiRouter);
 
 export { app };

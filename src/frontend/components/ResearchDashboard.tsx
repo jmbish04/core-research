@@ -3,18 +3,19 @@
  * Main interactive dashboard for managing research projects
  */
 
-import React, { useState, useEffect } from 'react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Badge } from './ui/badge';
-import ResearchChat from './ResearchChat';
+import React, { useState, useEffect } from "react";
+
+import ResearchChat from "./ResearchChat";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 
 interface Project {
   id: string;
   title: string;
-  status: 'draft' | 'planning' | 'running' | 'completed' | 'failed';
+  status: "draft" | "planning" | "running" | "completed" | "failed";
   topic?: string;
   tags?: string[];
   createdAt: Date;
@@ -24,13 +25,13 @@ interface Project {
 export default function ResearchDashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [newProjectTitle, setNewProjectTitle] = useState('');
-  const [newProjectTopic, setNewProjectTopic] = useState('');
+  const [newProjectTitle, setNewProjectTitle] = useState("");
+  const [newProjectTopic, setNewProjectTopic] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Mock user ID - in production, get from auth
-  const userId = 'user-1';
+  const userId = "user-1";
 
   useEffect(() => {
     loadProjects();
@@ -45,7 +46,7 @@ export default function ResearchDashboard() {
         setProjects(data.projects);
       }
     } catch (error) {
-      console.error('Failed to load projects:', error);
+      console.error("Failed to load projects:", error);
     } finally {
       setLoading(false);
     }
@@ -56,9 +57,9 @@ export default function ResearchDashboard() {
 
     setIsCreating(true);
     try {
-      const response = await fetch('/api/research/init', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/research/init", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,
           title: newProjectTitle,
@@ -69,26 +70,32 @@ export default function ResearchDashboard() {
       const data = await response.json();
 
       if (data.success) {
-        setNewProjectTitle('');
-        setNewProjectTopic('');
+        setNewProjectTitle("");
+        setNewProjectTopic("");
         await loadProjects();
         setSelectedProject(data.projectId);
       }
     } catch (error) {
-      console.error('Failed to create project:', error);
+      console.error("Failed to create project:", error);
     } finally {
       setIsCreating(false);
     }
   }
 
-  function getStatusColor(status: Project['status']) {
+  function getStatusColor(status: Project["status"]) {
     switch (status) {
-      case 'draft': return 'bg-muted';
-      case 'planning': return 'bg-blue-500';
-      case 'running': return 'bg-yellow-500';
-      case 'completed': return 'bg-green-500';
-      case 'failed': return 'bg-destructive';
-      default: return 'bg-muted';
+      case "draft":
+        return "bg-muted";
+      case "planning":
+        return "bg-blue-500";
+      case "running":
+        return "bg-yellow-500";
+      case "completed":
+        return "bg-green-500";
+      case "failed":
+        return "bg-destructive";
+      default:
+        return "bg-muted";
     }
   }
 
@@ -103,11 +110,7 @@ export default function ResearchDashboard() {
   if (selectedProject) {
     return (
       <div>
-        <Button
-          variant="outline"
-          onClick={() => setSelectedProject(null)}
-          className="mb-4"
-        >
+        <Button variant="outline" onClick={() => setSelectedProject(null)} className="mb-4">
           ← Back to Projects
         </Button>
         <ResearchChat projectId={selectedProject} />
@@ -122,9 +125,7 @@ export default function ResearchDashboard() {
         <h2 className="text-2xl font-bold mb-4">Start New Research</h2>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Research Title
-            </label>
+            <label className="block text-sm font-medium mb-2">Research Title</label>
             <Input
               value={newProjectTitle}
               onChange={(e) => setNewProjectTitle(e.target.value)}
@@ -133,9 +134,7 @@ export default function ResearchDashboard() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Topic / Query (optional)
-            </label>
+            <label className="block text-sm font-medium mb-2">Topic / Query (optional)</label>
             <Textarea
               value={newProjectTopic}
               onChange={(e) => setNewProjectTopic(e.target.value)}
@@ -149,7 +148,7 @@ export default function ResearchDashboard() {
             disabled={isCreating || !newProjectTitle.trim()}
             className="w-full"
           >
-            {isCreating ? 'Creating...' : 'Create Research Project'}
+            {isCreating ? "Creating..." : "Create Research Project"}
           </Button>
         </div>
       </Card>
@@ -174,18 +173,12 @@ export default function ResearchDashboard() {
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
-                    <h3 className="font-semibold text-lg truncate flex-1">
-                      {project.title}
-                    </h3>
-                    <Badge className={getStatusColor(project.status)}>
-                      {project.status}
-                    </Badge>
+                    <h3 className="font-semibold text-lg truncate flex-1">{project.title}</h3>
+                    <Badge className={getStatusColor(project.status)}>{project.status}</Badge>
                   </div>
 
                   {project.topic && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {project.topic}
-                    </p>
+                    <p className="text-sm text-muted-foreground line-clamp-2">{project.topic}</p>
                   )}
 
                   {project.tags && project.tags.length > 0 && (

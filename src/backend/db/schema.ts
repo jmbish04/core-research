@@ -5,8 +5,8 @@
  * It includes tables for authentication, dashboard metrics, AI threads, and system health.
  */
 
-import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
+import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
 /**
  * Users table for authentication
